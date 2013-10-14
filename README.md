@@ -1,4 +1,4 @@
-NIM - No-brainer Input Method
+nim - No-brainer Input Method
 =============================
 
 **nim** is an input method manager for the Linux desktop. An input method is
@@ -64,7 +64,7 @@ list of terms can be of use.
 
 **nim** is still very much an idea in infancy. You can help by offering suggestion
 and/or request for clarification using the [issue tracker](https://github.com/lewtds/nim/issues)
-or on IRC at [#nim@freenode.net](https://kiwiirc.com/client/irc.freenode.net/?nick=nim|?&theme=basic#nim).
+or on IRC at [#nim@freenode.net](https://kiwiirc.com/client/irc.freenode.net/?nick=nim|?&theme=basic#nim-dev).
 
 ## License
 
