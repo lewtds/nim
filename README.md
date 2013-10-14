@@ -53,7 +53,7 @@ list of terms can be of use.
 - **candidate** - a possible output for the current raw input
 
     Languages that use complex writing systems like Chinese, Japanese and Korean (CJK)
-    are usually typed in using sound transliteration. A spoken word can have multiple written
+    are usually typed in using sound transcription. A spoken word can have multiple written
     representations. As such, an input method supporting CJK has to allow the user
     to choose the final written word using a candidate table.
 
