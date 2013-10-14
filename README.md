@@ -46,7 +46,6 @@ list of terms can be of use.
 - **commit** - the act of sending the final string to the input context
 - **pre-editing** - a method for allowing the user to edit their input before commiting
 - **candidate** - a possible output for the current raw input.
-
     Languages that use complex writing systems like Chinese, Japanese and Korean (CJK)
     are usually typed in using sound transliteration. A spoken word can have multiple written
     representations. As such, an input method supporting CJK has to allow the user
