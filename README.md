@@ -56,3 +56,6 @@ list of terms can be of use.
     are usually typed in using sound transliteration. A spoken word can have multiple written
     representations. As such, an input method supporting CJK has to allow the user
     to choose the final written word using a candidate table.
+
+    A candidate table can also be used to provide autocompletion, word suggestion
+    or extra features such as dictionary lookup for non-common words.
