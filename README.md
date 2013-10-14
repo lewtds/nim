@@ -21,7 +21,7 @@ urgh.
 - have a simple yet useful API, preferably shorter than an A4 page when printed out
 - support both pre-editting and direct input
 - be nimble yet extensible
-- spots a user-friendly UI that gets out of the way as much as possible
+- spot a user-friendly UI that gets out of the way as much as possible
 - support multiple backends (Gtk, Qt, XIM, Wayland,...)
 
 ## Technical decisions
