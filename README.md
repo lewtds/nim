@@ -1,0 +1,52 @@
+NIM - No-brainer Input Method
+=============================
+
+**nim** is an input method manager for the Linux desktop. An input method is
+a program that helps users input their own language using just the US keyboard.
+With the help of an input method manager, multiple input methods can co-exist
+and be switched on-the-fly.
+
+**nim** was born out of the frustration we had with the current generation of
+input method manager on Linux (namely, **ibus** and **uim**). **uim** is quite a
+monolithic monster with an age-old UI and an equally unfriendly API. **iBus** used
+to be doable but is quickly falling down the dictatorship path of a typical GNOME
+project, they now even try (clumsily, of course) to manage both input methods
+and keyboard layouts. So, say goodbye to typing Vietnamese with the Dvorak keyboard,
+urgh.
+
+## Goals
+
+**nim** strive to:
+
+- have a simple yet useful API, preferably shorter than an A4 page when printed out
+- support both pre-editting and direct input
+- be nimble yet extensible
+- spots a user-friendly UI that gets out of the way as much as possible
+- support multiple backends (Gtk, Qt, XIM, Wayland,...)
+
+## Technical decisions
+
+**nim**'s architecture is very similar to that of iBus. **nim** will acts as a
+DBus server, facilitating conversations between input methods and input contexts.
+The choice of DBus here is arbitary and out of popularity. Any suggestion is
+welcomed.
+
+The core server will be written in Ruby, the Gtk+ input context in Vala, the Qt
+context in C++ to make the most out of each respective toolkit/framework.
+
+## Terms
+
+Input method is not a familiar topic for most developers. We hope this inexhaustive
+list of terms can be of use.
+
+- **input method, IM** - a program that helps insert non-latin, non-English text
+- **input context** - a text field/area from the perspective of an IM
+- **input method manager** - a program that allows multiple input methods to
+    co-exist
+- **commit** - the act of sending the final string to the input context
+- **pre-editing** - a method for allowing the user to edit their input before commiting
+- **candidate** - a possible output for the current raw input. Languages that use
+    complex writing systems like Chinese, Japanese and Korean (CJK) are usually typed
+    in using sound transliteration. A spoken word can have multiple written
+    representations. As such, an input method supporting CJK has to allow the user
+    to choose the final written word using a candidate table.
