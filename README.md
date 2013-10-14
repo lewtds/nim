@@ -36,7 +36,7 @@ context in C++ to make the most out of each respective toolkit/framework.
 
 ## Terms
 
-Input method is not a familiar topic for most developers. We hope this inexhaustive
+Input method is not a familiar topic for most developers. We hope this non-exhaustive
 list of terms can be of use.
 
 - **input method, IM** - a program that helps insert non-latin, non-English text
@@ -45,8 +45,9 @@ list of terms can be of use.
     co-exist
 - **commit** - the act of sending the final string to the input context
 - **pre-editing** - a method for allowing the user to edit their input before commiting
-- **candidate** - a possible output for the current raw input. Languages that use
-    complex writing systems like Chinese, Japanese and Korean (CJK) are usually typed
-    in using sound transliteration. A spoken word can have multiple written
+- **candidate** - a possible output for the current raw input.
+
+    Languages that use complex writing systems like Chinese, Japanese and Korean (CJK)
+    are usually typed in using sound transliteration. A spoken word can have multiple written
     representations. As such, an input method supporting CJK has to allow the user
     to choose the final written word using a candidate table.
