@@ -65,3 +65,10 @@ list of terms can be of use.
 **nim** is still very much an idea in infancy. You can help by offering suggestion
 and/or request for clarification using the [issue tracker](https://github.com/lewtds/nim/issues)
 or on IRC at [#nim@freenode.net](https://kiwiirc.com/client/irc.freenode.net/?nick=nim|?&theme=basic#nim).
+
+## License
+
+**nim** is licensed under the terms of the GNU General Public License v3 (GPLv3).
+See [LICENSE](LICENSE) for further information.
+
+Copyright (C) 2013 Trung Ngo
