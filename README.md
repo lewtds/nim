@@ -59,3 +59,9 @@ list of terms can be of use.
 
     Input methods can also take advantage of a candidate table to provide autocompletion,
     word suggestion or extra features such as dictionary lookup for non-common words.
+
+## Contributing
+
+**nim** is still very much an idea in infancy. You can help by offering suggestion
+and/or request for clarification using the [issue tracker](https://github.com/lewtds/nim/issues)
+or on IRC at [#nim@freenode.net](https://kiwiirc.com/client/irc.freenode.net/?nick=nim|?&theme=basic#nim).
