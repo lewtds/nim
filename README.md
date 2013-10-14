@@ -57,5 +57,5 @@ list of terms can be of use.
     representations. As such, an input method supporting CJK has to allow the user
     to choose the final written word using a candidate table.
 
-    A candidate table can also be used to provide autocompletion, word suggestion
-    or extra features such as dictionary lookup for non-common words.
+    Input methods can also take advantage of a candidate table to provide autocompletion,
+    word suggestion or extra features such as dictionary lookup for non-common words.
