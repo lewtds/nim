@@ -47,10 +47,10 @@ list of terms can be of use.
 - **input method, IM** - a program that helps insert non-latin, non-English text
 - **input context** - a text field/area from the perspective of an IM
 - **input method manager** - a program that allows multiple input methods to
-    co-exist
+    work with an input context and vice versa
 - **commit** - the act of sending the final string to the input context
 - **pre-editing** - a method for allowing the user to edit their input before commiting
-- **candidate** - a possible output for the current raw input.
+- **candidate** - a possible output for the current raw input
 
     Languages that use complex writing systems like Chinese, Japanese and Korean (CJK)
     are usually typed in using sound transliteration. A spoken word can have multiple written
