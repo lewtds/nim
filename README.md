@@ -26,13 +26,18 @@ urgh.
 
 ## Technical decisions
 
-**nim**'s architecture is very similar to that of iBus. **nim** will act as a
+**nim**'s architecture is very similar to that of iBus. **nim** acts as a
 DBus server, facilitating conversations between input methods and input contexts.
-The choice of DBus here is arbitary and out of popularity. Any suggestion is
-welcomed.
 
 The core server will be written in Ruby, the Gtk+ input context in Vala, the Qt
 context in C++ to make the most out of each respective toolkit/framework.
+
+Each input method can be lain out in any language and will communicate with the
+core server directly using DBus or indirectly through our provided wrapper library
+written in C or Vala.
+
+The choice of DBus here is arbitary and out of popularity. Suggestion is
+welcomed.
 
 ## Terms
 
