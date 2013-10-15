@@ -2,9 +2,9 @@
 require 'dbus'
 
 class Nim < DBus::Object
-  dbus_interface "nim.server" do
-    dbus_method :says, "in msg:s" do |msg|
-      puts "Got this message: #{msg}"
+  dbus_interface "nim.server.InputContext" do
+    dbus_method :send_key, "in key:s" do |key|
+      puts "This key got pressed: #{key}"
     end
   end
 end

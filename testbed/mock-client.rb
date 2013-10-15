@@ -3,12 +3,10 @@ require 'dbus'
 
 session_bus = DBus::SessionBus.instance
 
-foo=session_bus.service('org.nim')
+server = session_bus.service('org.nim').object('/server')
 
-server=foo.object('/server')
-
-server.default_iface='nim.server'
+server.default_iface = 'nim.server.InputContext'
 
 server.introspect
 
-server.says 'yay'
+server.send_key 'yay'
