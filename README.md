@@ -39,6 +39,8 @@ written in C or Vala.
 The choice of DBus here is arbitary and out of popularity. Suggestion is
 welcomed.
 
+[DBus API](https://github.com/mvidner/ruby-dbus/blob/master/doc/Tutorial.md)
+
 ## Terms
 
 Input method is not a familiar topic for most developers. We hope this non-exhaustive
