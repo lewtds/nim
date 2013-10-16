@@ -1,6 +1,5 @@
 # This is a sample input method.
 
-# We need DBus to talk to Nim
 require 'dbus'
 
 # Open a connection to Nim

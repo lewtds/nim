@@ -17,8 +17,8 @@ server.on_signal("on_string_committed") do |str|
 end
 
 # Send a test key to Nim. We expect that Nim will forward
-# this key press to the current input method and it will reply appropriately
-# using the **string-committed** signal.
+# this key press to the current input method and that the input method
+# will reply appropriately using the **string-committed** signal.
 server.send_key '9'
 
 # Start the main loop.
