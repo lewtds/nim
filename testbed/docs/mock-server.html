@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>mock-server.rb</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page">
+            
+              
+              <a class="source" href="mock-client.html">
+                mock-client.rb
+              </a>
+            
+              
+              <a class="source" href="mock-im.html">
+                mock-im.rb
+              </a>
+            
+              
+              <a class="source" href="mock-server.html">
+                mock-server.rb
+              </a>
+            
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>mock-server.rb</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap for-h3">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              <h3>Prerequisites</h3>
+<p>Obviously, we need the &#39;dbus&#39; library.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="keyword">require</span> <span class="string">'dbus'</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap for-h3">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <h3>Public API</h3>
+<p>Nim is a DBus object that exhibits two different programming interfaces. One
+is for talking to input contexts and the other is for input methods. Most of
+the work right now for Nim is to forward messages between the input context
+and the input method. We currently support a single input method and a single
+input context working at once.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="class"><span class="keyword">class</span> <span class="title">Nim</span> <span class="inheritance">&lt; <span class="parent">DBus::Object</span></span></span>
+  dbus_interface <span class="string">"nim.server.InputContext"</span> <span class="keyword">do</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>Input contexts use this method to signal that a key has been pressed by
+the user.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    dbus_method <span class="symbol">:send_key</span>, <span class="string">"in key:s"</span> <span class="keyword">do</span> |key|
+      puts <span class="string">"This key got pressed: <span class="subst">#{key}</span>"</span>
+      <span class="keyword">self</span>.on_keypressed key
+    <span class="keyword">end</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>Meanwhile, they listen on this signal to get the final string sent by input
+methods.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    dbus_signal <span class="symbol">:on_string_committed</span>, <span class="string">"str:s"</span>
+  <span class="keyword">end</span>
+
+  dbus_interface <span class="string">"nim.server.InputMethod"</span> <span class="keyword">do</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>Input methods use this method to send the final string to input contexts.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    dbus_method <span class="symbol">:commit_string</span>, <span class="string">"in str:s"</span> <span class="keyword">do</span> |str|
+      <span class="keyword">self</span>.on_string_committed <span class="string">"From IM: <span class="subst">#{str}</span>"</span>
+    <span class="keyword">end</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>And listen on this signal for new keypresses.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    dbus_signal <span class="symbol">:on_keypressed</span>, <span class="string">"key:s"</span>
+  <span class="keyword">end</span>
+<span class="keyword">end</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap for-h3">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <h3>Initialization</h3>
+<p>Export Nim at <code>org.nim/server</code> on the current session bus.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>bus = <span class="constant">DBus::SessionBus</span>.instance
+service = bus.request_service(<span class="string">"org.nim"</span>)
+service.export <span class="constant">Nim</span>.new(<span class="string">'/server'</span>)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <p>Run the main loop and wait for connections</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>main = <span class="constant">DBus::Main</span>.new
+main &lt;&lt; bus
+main.run</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>
