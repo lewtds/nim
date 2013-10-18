@@ -2,21 +2,22 @@
 
 require 'dbus'
 
-# Open a connection to Nim
-session_bus = DBus::SessionBus.instance
-server = session_bus.service('org.nim').object('/server')
+class InputMethodProxy < DBus::Object
+  dbus_interface "nim.server.InputMethod" do
+    dbus_method :key_press, "in str:s" do |str|
+      
+    end
 
-# The object at `org.nim/server` has two interfaces, we only use the interface
-# for input methods.
-server.default_iface = 'nim.server.InputMethod'
-
-# Wait for the **keypress** signal and reply with an output string.
-server.on_signal("on_keypressed") do |key|
-  puts "Key pressed: #{key}"
-  server.commit_string "hello, you pressed #{key}"
+    dbus_method :change_input_context, "in path:s" do |path|
+      
+    end
+  end
 end
 
-# Start the main loop. We are doing event-driven programming here.
+session_bus = DBus::SessionBus.instance
+service = session_bus.request_service(session_bus.unique_name)
+service.export InputMethodProxy.new('/im')
+
 main = DBus::Main.new
 main << session_bus
 main.run
