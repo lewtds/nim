@@ -1,114 +1,64 @@
-#### Prerequisites
-
-# Obviously, we need the 'dbus' library.
 require 'dbus'
 
-#### Public API
+class Broker < DBus::Object
 
-# At any moment, there is only one active input context and one active input
-# method.
+  def initialize(path, bus)
+    super(path)
+    @bus = bus
+    @input_contexts = {}
+    @input_methods = {}
+  end
 
-# When an input method starts, it registers itself with Nim then wait for the
-# **input-context-changed** signal from Nim. This signal carries the path for
-# the newly focused input context. The input method is supposed to talk to this
-# input context object. When the conversation ends, **input-context-changed**
-# is raised again, either because the user has disabled Nim temporarily or
-# permanently, in which case the **path** argument will be blank; or because the
-# current focus has been changed, in which case the **path** argument will contain
-# the path to the new input context.
+  dbus_interface "nim.server.InputMethod" do
+    dbus_method :register, "in im_id:s" do |im_id|
+      puts "IM: #{im_id} registered"
 
-# When an input context starts, it registers itself with Nim and wait for the
-# focus signal from its toolkit. Then it forwards the signal to Nim.
+      im = @bus.service(im_id).object("/im")
+      im.introspect
+      im.default_iface = "nim.im.InputMethod"
 
-# A conversation starts with an input context getting the input focus, it calls
-# a method from Nim to signify it of the new focus. Nim makes it the current
-# input context and puts the previous input context back in the store. According
-# to a user-overridable rule, the current input method could be used or be replaced
-# by a default input method for the newly focused input context.
-
-# An example
-# Assuming we have an input context called IC and an input method called IM. We
-# also have a dummy input context that emits no signal and replies to no messages
-# call dummyIC. A similar dummy input method called dummyIM also exists. It simply
-# echo the
-class Nim < DBus::Object
-  dbus_interface "org.nim.Router" do
-
-    dbus_method :register_input_context do
-      # A new input context proxy object should be created, exported and given
-      # to the requesting input context
-    end
-
-    dbus_method :register_input_method do
-      # A new input method proxy object should be created, exported and given
-      # to the requesting input method
+      @input_methods[im_id] = im
+      @active_im_id = im_id
     end
   end
 
-  def preprocess_key_press(key)
-    # This method should be the first to receive the new key press after the
-    # input context proxy. We could use this to implement control key sequences
-    # like Ctrl-Space to toggle Nim.
-  end
-end
+  dbus_interface "nim.server.InputContext" do
+    dbus_method :register, "in ic_id:s" do |ic_id|
+      puts "IC: #{ic_id} registered"
 
-class InputMethodProxy < DBus::Object
-  # This interface is used by input methods.
-  dbus_interface "org.nim.InputMethodProxy" do
-    # Input methods use this method to send the final string to input contexts.
-    dbus_method :commit_string, "in str:s" do |str|
-      self.on_string_committed "From IM: #{str}"
+      ic = @bus.service(ic_id).object("/ic")
+      ic.introspect
+      ic.default_iface = "nim.ic.InputContext"
+
+      @input_contexts[ic_id] = ic
     end
 
-    # And listen on this signal for new keypresses.
-    #
-    # QUESTION: normally, input contexts anticipate a boolean answer to this
-    # signal: TRUE if the key has been consumed by the input method (the key won't
-    # be echoed onscreen by the input context) or FALSE if the input method shows
-    # no interest in the key. How can we implement this synchronized behaviour
-    # with DBus signal?
-    dbus_signal :key_pressed, "key:s"
+    dbus_method :focus_in, "in ic_id:s" do |ic_id|
+      # When an input context is focused in, it should be selected as the active
+      # input context and be routed to the active input method.
+      puts "#{ic_id} is focused in"
+      @active_ic = @input_contexts[ic_id]
 
-    # This signal is raised when the user changes focus and a new input context
-    # is selected. An input method only needs to know that the current input
-    # context has been reset.
-    dbus_signal :reset
+      # Notify both the calling input context and the active input method of the
+      # change. Probably, in the future, the notified input method might not be
+      # the active input method but one chosen by a policy (e.g. always use a
+      # dummy input method for new input contexts...)
+      @active_ic.set_input_method(@active_im_id)
+      @input_methods[@active_im_id].change_input_context(ic_id)
+    end
+
+    dbus_method :preprocess_key_press, "in key:s, out ret:b" do |key|
+      [false]
+    end
   end
 end
 
-class InputContextProxy < DBus::Object
-  dbus_interface "org.nim.InputContextProxy" do
-    dbus_method :key_press, "in key:s" do
-    end
 
-    dbus_method :focus_in do
-      # The previous input context should be kicked out now
-    end
+session_bus = DBus::SessionBus.instance
+service = session_bus.request_service('org.nim.Broker')
+service.export Broker.new('/broker', session_bus)
 
-    dbus_method :focus_out do
-      # The dummy input context should be focused in now
-    end
-
-    dbus_method :reset do
-    end
-
-    dbus_signal :string_committed, "in str:s"
-  end
-end
-
-# At request of an input context, it will receive a DBus object representing
-# an input method called inputMethodProxy. On the other side, an input method
-# is requested to create a worker object and Nim will connect it with a new
-# input context proxy it created.
-
-#### Initialization
-
-# Export Nim at `org.nim/server` on the current session bus.
-bus = DBus::SessionBus.instance
-service = bus.request_service("org.nim")
-service.export Nim.new('/server')
-
-# Run the main loop and wait for connections
 main = DBus::Main.new
-main << bus
+main << session_bus
 main.run
+
