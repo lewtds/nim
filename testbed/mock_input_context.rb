@@ -6,9 +6,9 @@ class InputContextProxy < DBus::Object
 
   attr_reader :service
   def initialize(path, session_bus)
-    super path
-    @broker = session_bus.service('org.nim.Broker').object('/broker') 
-    @broker.default_iface 'nim.server.InputContext'
+    super(path)
+    @broker = session_bus.service('org.nim.Broker').object('/broker')
+    @broker.default_iface = 'nim.server.InputContext'
   end
 
   def register
