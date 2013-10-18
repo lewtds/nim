@@ -24,7 +24,9 @@ class Broker < DBus::Object
     end
 
     dbus_method :focus_in, "in ic_id:s" do |ic_id|
-
+      # When an input context is focused in, it should be selected as the active
+      # input context and be routed to the active input method.
+      puts "#{ic_id} is focused in"
     end
 
     dbus_method :preprocess_key_press, "in key:s" do |key|
