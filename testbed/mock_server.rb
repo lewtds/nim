@@ -5,7 +5,7 @@ class Broker < DBus::Object
   def initialize(path, bus)
     super(path)
     @bus = bus
-    @input_contexts = []
+    @input_contexts = {}
   end
 
   dbus_interface "nim.server.InputMethod" do
@@ -20,7 +20,7 @@ class Broker < DBus::Object
       ic = @bus.service(path).object("/ic")
       ic.introspect
       ic.default_iface = "nim.ic.InputContext"
-      @input_contexts.push(ic)
+      @input_contexts[path] = ic
     end
 
     dbus_method :focus_in, "in ic_id:s" do |ic_id|
