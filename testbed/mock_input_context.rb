@@ -1,14 +1,17 @@
 # This is a sample input method.
 
 require 'dbus'
+require 'thread'
 
 class InputContextProxy < DBus::Object
 
   def initialize(path, session_bus)
     super(path)
-    @broker = session_bus.service('org.nim.Broker').object('/broker')
+    @bus = session_bus
+    @broker = @bus.service('org.nim.Broker').object('/broker')
     @broker.introspect
     @broker.default_iface = 'nim.server.InputContext'
+    @im = nil
   end
 
   def register
@@ -19,9 +22,24 @@ class InputContextProxy < DBus::Object
     @broker.focus_in(@service.name)
   end
 
+  def send_key(key)
+    # DBus methods can have many output arguments. In this
+    unless @broker.preprocess_key_press(key)[0]
+      @im.key_press(key)
+    end
+  end
+
   dbus_interface "nim.ic.InputContext" do
     dbus_method :commit_string, "in str:s" do |str|
+      puts "String committed: #{str}"
+    end
 
+    dbus_method :set_input_method, "in im_id:s" do |im_id|
+      puts "Active IM set: #{im_id}"
+      @im = @bus.service(im_id).object("/im")
+      @im.introspect
+      @im.default_iface = "nim.im.InputMethod"
+      puts @im
     end
   end
 end
