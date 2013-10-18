@@ -8,6 +8,7 @@ class InputContextProxy < DBus::Object
   def initialize(path, session_bus)
     super(path)
     @broker = session_bus.service('org.nim.Broker').object('/broker')
+    @broker.introspect
     @broker.default_iface = 'nim.server.InputContext'
   end
 
@@ -15,7 +16,7 @@ class InputContextProxy < DBus::Object
     @broker.register(@service.name)
   end
 
-  dbus_interface "nim.server.InputContext" do
+  dbus_interface "nim.ic.InputContext" do
     dbus_method :commit_string, "in str:s" do |str|
 
     end
@@ -24,7 +25,11 @@ end
 
 session_bus = DBus::SessionBus.instance
 service = session_bus.request_service("org.nim.ic.Fake")
-service.export InputContextProxy.new('/ic', session_bus)
+
+ic = InputContextProxy.new('/ic', session_bus)
+service.export(ic)
+
+ic.register
 
 main = DBus::Main.new
 main << session_bus
