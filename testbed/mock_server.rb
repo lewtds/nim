@@ -15,12 +15,12 @@ class Broker < DBus::Object
   end
 
   dbus_interface "nim.server.InputContext" do
-    dbus_method :register, "in path:s" do |path|
-      puts "IC: #{path} registered"
-      ic = @bus.service(path).object("/ic")
+    dbus_method :register, "in ic_id:s" do |ic_id|
+      puts "IC: #{ic_id} registered"
+      ic = @bus.service(ic_id).object("/ic")
       ic.introspect
       ic.default_iface = "nim.ic.InputContext"
-      @input_contexts[path] = ic
+      @input_contexts[ic_id] = ic
     end
 
     dbus_method :focus_in, "in ic_id:s" do |ic_id|
